@@ -188,10 +188,25 @@ const Home = ({ navigation }) => {
   const renderHeader = () => (
     <>
       <View style={styles.header}>
-        <Text style={styles.greeting}>Olá, {nome}!</Text>
-        <View style={styles.waterInfoContainer}>
-          <CustomIcon name="water-drop" size={24} color={theme.colors.surface} />
-          <Text style={styles.waterInfo}>{aguaDisponivel} L</Text>
+        <View style={styles.headerContent}>
+          <View style={styles.leftContent}>
+            <Text style={styles.greeting}>Olá, {nome}!</Text>
+            <View style={styles.waterWrapper}>
+              <CustomIcon 
+                name="water-drop" 
+                size={24} 
+                color={theme.colors.surface} 
+              />
+              <Text style={styles.waterInfo}>{aguaDisponivel} L</Text>
+            </View>
+          </View>
+          <View style={styles.logoContainer}>
+            <CustomIcon 
+              name="logo" 
+              size={80}
+              style={styles.headerLogo}
+            />
+          </View>
         </View>
       </View>
       
@@ -294,22 +309,48 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: theme.colors.primary,
   },
+  headerContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  leftContent: {
+    justifyContent: 'center',
+  },
   greeting: {
     fontSize: 24,
     fontWeight: 'bold',
     color: theme.colors.surface,
-    marginBottom: 10,
+    marginBottom: 8,
   },
-  waterInfoContainer: {
+  logoContainer: {
+    backgroundColor: theme.colors.background,
+    borderRadius: 50, // Metade do tamanho do container para ficar circular
+    padding: 10,
+    width: 100, // Largura fixa
+    height: 100, // Altura fixa igual à largura
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  waterWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 45, // Altura específica para acomodar o ícone
-    paddingVertical: 4, // Padding vertical para evitar cortes
   },
   waterInfo: {
     fontSize: 18,
     color: theme.colors.surface,
     marginLeft: 10,
+  },
+  headerLogo: {
+    resizeMode: 'contain',
   },
   buttonContainer: {
     flexDirection: 'row',

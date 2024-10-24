@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import db from '../database/db';
 import theme from '../styles/theme';
+import CustomIcon from '../components/common/CustomIcon';
 
 const PrimeiraExecucao = ({ navigation }) => {
   const [nome, setNome] = useState('');
@@ -50,8 +51,12 @@ const PrimeiraExecucao = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
+        <CustomIcon 
+          name="logo" 
+          size={150} // Logo bem maior para dar destaque
+          style={styles.logo} 
+        />
         <Text style={styles.title}>Bem-vindo ao Hydrogen</Text>
-        <MaterialCommunityIcons name="water" size={50} color={theme.colors.primary} />
         <TextInput
           style={styles.input}
           label="Seu nome"
@@ -78,36 +83,41 @@ const PrimeiraExecucao = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: theme.colors.background,
-    justifyContent: 'center',
   },
   content: {
+    flex: 1,
     padding: 20,
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.roundness,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logo: {
+    marginBottom: 40,
+    tintColor: null, // Remove a coloração para manter as cores originais
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: theme.colors.primary,
-    marginBottom: 20,
+    marginBottom: 30,
     textAlign: 'center',
   },
   input: {
-    marginBottom: 20,
+    width: '100%',
+    marginBottom: 15,
   },
   button: {
     backgroundColor: theme.colors.primary,
-    padding: 10,
+    padding: 15,
     borderRadius: theme.roundness,
-    alignItems: 'center',
+    width: '100%',
     marginTop: 10,
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: theme.colors.surface,
     fontSize: 16,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

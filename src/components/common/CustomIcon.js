@@ -22,6 +22,7 @@ const iconMap = {
 
   'task-add': require('../../assets/icons/task-add.png'),
   'action-add': require('../../assets/icons/action-add.png'),
+  'logo': require('../../assets/icons/logo.png'),
 };
 
 const CustomIcon = ({ name, size = 24, color, style }) => {
