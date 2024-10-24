@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Dimensions, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import { Text, List } from 'react-native-paper';
-import { LineChart } from 'react-native-gifted-charts';
+import { LineChart } from 'react-native-chart-kit';
 import moment from 'moment';
 import db from '../database/db';
 import theme from '../styles/theme';
@@ -96,68 +96,55 @@ const Graficos = ({ navigation }) => {
     }
 
     try {
-      const chartData = dados.map(item => ({
-        value: parseFloat(item.value || item.eficiencia) || 0,
-        label: item.date || item.data,
-        dataPointText: `${(parseFloat(item.value || item.eficiencia) || 0).toFixed(1)}${titulo.includes('Eficiência') ? '%' : ''}`,
-      }));
+      const data = {
+        labels: dados.map(item => item.date || item.data),
+        datasets: [{
+          data: dados.map(item => 
+            titulo.includes('Eficiência') 
+              ? parseFloat(item.eficiencia) 
+              : Math.round(parseFloat(item.value))
+          )
+        }]
+      };
+
+      const chartConfig = {
+        backgroundColor: '#ffffff',
+        backgroundGradientFrom: '#ffffff',
+        backgroundGradientTo: '#ffffff',
+        decimalPlaces: titulo.includes('Eficiência') ? 1 : 0,
+        color: (opacity = 1) => `rgba(0, 150, 136, ${opacity})`,
+        style: {
+          borderRadius: 16
+        },
+        propsForDots: {
+          r: "6",
+          strokeWidth: "2",
+          stroke: theme.colors.primary
+        }
+      };
 
       return (
         <View style={styles.chartContainer}>
           <Text style={styles.chartTitle}>{titulo}</Text>
           <LineChart
-            data={chartData}
-            height={250}
-            width={350}
-            spacing={40}
-            initialSpacing={20}
-            color={theme.colors.primary}
-            thickness={2}
-            startFillColor={`${theme.colors.primary}20`}
-            endFillColor={`${theme.colors.primary}00`}
-            startOpacity={0.9}
-            endOpacity={0.2}
-            backgroundColor="#fff"
-            rulesColor="#e3e3e3"
-            rulesType="solid"
-            yAxisColor="#e3e3e3"
-            xAxisColor="#e3e3e3"
-            xAxisLabelTextStyle={{ color: theme.colors.text, fontSize: 12 }}
-            yAxisTextStyle={{ color: theme.colors.text, fontSize: 12 }}
-            hideDataPoints={false}
-            dataPointsColor={theme.colors.primary}
-            dataPointsRadius={5}
-            curved
-            showVerticalLines
-            verticalLinesColor="rgba(14,164,164,0.5)"
-            xAxisLabelRotation={-45}
-            hideYAxisText={false}
-            yAxisLabelPrefix={titulo.includes('Eficiência') ? '' : ''}
-            yAxisLabelSuffix={titulo.includes('Eficiência') ? '%' : ''}
-            pointerConfig={{
-              pointerStripHeight: 160,
-              pointerStripColor: theme.colors.primary,
-              pointerStripWidth: 2,
-              pointerColor: theme.colors.primary,
-              radius: 6,
-              pointerLabelWidth: 100,
-              pointerLabelHeight: 90,
-              activatePointersOnLongPress: true,
-              autoAdjustPointerLabelPosition: true,
-              pointerLabelComponent: (items) => {
-                const item = items[0];
-                return (
-                  <View style={styles.tooltipContainer}>
-                    <Text style={styles.tooltipText}>
-                      {item.label}
-                    </Text>
-                    <Text style={styles.tooltipValue}>
-                      {item.dataPointText}
-                    </Text>
-                  </View>
-                );
-              },
+            data={data}
+            width={Dimensions.get('window').width - 40}
+            height={220}
+            chartConfig={chartConfig}
+            bezier
+            style={{
+              marginVertical: 8,
+              borderRadius: 16
             }}
+            yAxisLabel={titulo.includes('Eficiência') ? "" : ""}
+            yAxisSuffix={titulo.includes('Eficiência') ? "%" : ""}
+            formatYLabel={(value) => 
+              titulo.includes('Eficiência') 
+                ? `${parseFloat(value).toFixed(1)}` 
+                : `${Math.round(value)}`
+            }
+            fromZero
+            segments={titulo.includes('Eficiência') ? 5 : 4}
           />
         </View>
       );
