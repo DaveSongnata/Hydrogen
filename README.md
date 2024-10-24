@@ -119,10 +119,10 @@ apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
 <div align="center">
   <div style="display: flex; flex-direction: row; gap: 10px; flex-wrap: wrap; justify-content: center;">
-    <img src="screenshots/S109_Hydrogen.png" width="200"/>
-    <img src="screenshots/S256-Hydrogen.png" width="200"/>
-    <img src="screenshots/S319-Hydrogen.png" width="200"/>
-    <img src="screenshots/S353-Hydrogen.png" width="200"/>
+    <img src="screenshots/S109_Hydrogen.jpg" width="200"/>
+    <img src="screenshots/S256-Hydrogen.jpg" width="200"/>
+    <img src="screenshots/S319-Hydrogen.jpg" width="200"/>
+    <img src="screenshots/S353-Hydrogen.jpg" width="200"/>
   </div>
 </div>
 
