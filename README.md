@@ -60,20 +60,35 @@ npx react-native run-android
 
 src/
 ├── assets/
+
 │ └── icons/
+
 ├── components/
+
 │ ├── common/
+
 │ │ ├── CustomAlert.js
+
 │ │ └── CustomIcon.js
+
 │ ├── CriarAcao.js
+
 │ ├── CriarAtividade.js
+
 │ ├── EditarAcao.js
+
 │ ├── Graficos.js
+
 │ ├── Home.js
+
 │ └── ReabastecerAgua.js
+
 ├── database/
+
 │ └── db.js
+
 └── styles/
+
 └── theme.js
 
 
