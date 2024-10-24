@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { TextInput, List, Text } from 'react-native-paper';
 import db from '../database/db';
 import theme from '../styles/theme';
 import CustomIcon from './common/CustomIcon'; 
+import CustomAlert from './common/CustomAlert';
 
 const EditarAcao = ({ route, navigation }) => {
   const { acao } = route.params;
@@ -11,6 +12,27 @@ const EditarAcao = ({ route, navigation }) => {
   const [atividades, setAtividades] = useState([]);
   const [atividadeSelecionada, setAtividadeSelecionada] = useState(null);
   const [expanded, setExpanded] = useState(false);
+  const [alertConfig, setAlertConfig] = useState({
+    visible: false,
+    title: '',
+    message: '',
+    buttons: []
+  });
+
+  const showAlert = (title, message, buttons) => {
+    setAlertConfig({
+      visible: true,
+      title,
+      message,
+      buttons: buttons.map(btn => ({
+        ...btn,
+        onPress: () => {
+          setAlertConfig(prev => ({ ...prev, visible: false }));
+          btn.onPress && btn.onPress();
+        }
+      }))
+    });
+  };
 
   useEffect(() => {
     carregarAtividades();
@@ -36,22 +58,33 @@ const EditarAcao = ({ route, navigation }) => {
   };
 
   const atualizarAcao = () => {
-    if (!atividadeSelecionada || !qtdReal) {
-      Alert.alert('Erro', 'Por favor, preencha todos os campos');
+    if (!qtdReal) {
+      showAlert(
+        'Erro',
+        'Por favor, insira a quantidade real',
+        [{ text: 'OK', style: 'cancel' }]
+      );
       return;
     }
 
     db.transaction(txn => {
       txn.executeSql(
-        `UPDATE Acoes SET Qtdreal = ?, idatividade = ? WHERE rowid = ?`,
-        [parseInt(qtdReal), atividadeSelecionada.id, acao.rowid],
+        `UPDATE Acoes SET Qtdreal = ? WHERE rowid = ?`,
+        [parseInt(qtdReal), acao.rowid],
         (tx, res) => {
-          Alert.alert('Sucesso', 'Ação atualizada com sucesso!');
-          navigation.goBack();
+          showAlert(
+            'Sucesso',
+            'Ação atualizada com sucesso!',
+            [{ text: 'OK', onPress: () => navigation.goBack() }]
+          );
         },
-        error => { 
+        error => {
           console.log('Erro ao atualizar ação', error);
-          Alert.alert('Erro', 'Ocorreu um erro ao atualizar a ação');
+          showAlert(
+            'Erro',
+            'Ocorreu um erro ao atualizar a ação',
+            [{ text: 'OK', style: 'cancel' }]
+          );
         }
       );
     });
@@ -90,6 +123,14 @@ const EditarAcao = ({ route, navigation }) => {
       <TouchableOpacity style={styles.button} onPress={atualizarAcao}>
         <Text style={styles.buttonText}>Atualizar Ação</Text>
       </TouchableOpacity>
+
+      <CustomAlert
+        visible={alertConfig.visible}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        buttons={alertConfig.buttons}
+        onDismiss={() => setAlertConfig(prev => ({ ...prev, visible: false }))}
+      />
     </View>
   );
 };
@@ -112,7 +153,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: theme.colors.surface,
     fontSize: 16,
     fontWeight: 'bold',
   },

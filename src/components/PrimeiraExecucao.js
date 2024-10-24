@@ -6,10 +6,12 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import db from '../database/db';
 import theme from '../styles/theme';
 import CustomIcon from '../components/common/CustomIcon';
+import CustomAlert from '../components/common/CustomAlert';
 
 const PrimeiraExecucao = ({ navigation }) => {
   const [nome, setNome] = useState('');
   const [aguaTotal, setAguaTotal] = useState('');
+  const [alertVisible, setAlertVisible] = useState(false);
 
   useEffect(() => {
     checkFirstLaunch();
@@ -24,7 +26,7 @@ const PrimeiraExecucao = ({ navigation }) => {
 
   const salvarUsuario = () => {
     if (!nome || !aguaTotal) {
-      alert('Por favor, preencha todos os campos');
+      setAlertVisible(true);
       return;
     }
 
@@ -75,6 +77,19 @@ const PrimeiraExecucao = ({ navigation }) => {
         <TouchableOpacity style={styles.button} onPress={salvarUsuario}>
           <Text style={styles.buttonText}>Começar</Text>
         </TouchableOpacity>
+        <CustomAlert
+          visible={alertVisible}
+          title="Erro"
+          message="Por favor, preencha todos os campos"
+          buttons={[
+            {
+              text: 'OK',
+              style: 'cancel',
+              onPress: () => setAlertVisible(false)
+            }
+          ]}
+          onDismiss={() => setAlertVisible(false)}
+        />
       </View>
     </View>
   );

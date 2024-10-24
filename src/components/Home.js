@@ -13,12 +13,19 @@ import db from '../database/db';
 import theme from '../styles/theme';
 import moment from 'moment';
 import CustomIcon from './common/CustomIcon';
+import CustomAlert from './common/CustomAlert';
 
 const Home = ({ navigation }) => {
   const [nome, setNome] = useState('');
   const [aguaDisponivel, setAguaDisponivel] = useState(0);
   const [acoesPendentes, setAcoesPendentes] = useState([]);
   const [acoesConcluidas, setAcoesConcluidas] = useState([]);
+  const [alertConfig, setAlertConfig] = useState({
+    visible: false,
+    title: '',
+    message: '',
+    buttons: []
+  });
 
   const carregarDados = useCallback(() => {
     db.transaction(txn => {
@@ -86,6 +93,22 @@ const Home = ({ navigation }) => {
     }, [carregarDados])
   );
 
+  // Função helper para mostrar alerts
+  const showAlert = (title, message, buttons) => {
+    setAlertConfig({
+      visible: true,
+      title,
+      message,
+      buttons: buttons.map(btn => ({
+        ...btn,
+        onPress: () => {
+          setAlertConfig(prev => ({ ...prev, visible: false }));
+          btn.onPress && btn.onPress();
+        }
+      }))
+    });
+  };
+
   const marcarComoConcluida = (id, qtdReal) => {
     db.transaction(txn => {
       txn.executeSql(
@@ -94,7 +117,7 @@ const Home = ({ navigation }) => {
         (tx, res) => {
           const aguaDisponivel = res.rows.item(0).qtdaguadisponivel;
           if (qtdReal > aguaDisponivel) {
-            Alert.alert(
+            showAlert(
               'Atenção',
               'Esta ação pode deixar o estoque de água negativado. Deseja reabastecer a água antes de concluir?',
               [
@@ -116,7 +139,14 @@ const Home = ({ navigation }) => {
             concluirAcao(id, qtdReal);
           }
         },
-        error => { console.log('Erro ao buscar água disponível', error); }
+        error => { 
+          console.log('Erro ao buscar água disponível', error);
+          showAlert(
+            'Erro',
+            'Erro ao verificar água disponível',
+            [{ text: 'OK', style: 'cancel' }]
+          );
+        }
       );
     });
   };
@@ -132,13 +162,30 @@ const Home = ({ navigation }) => {
             `UPDATE Agua_disponivel SET qtdaguadisponivel = qtdaguadisponivel - ?`,
             [qtdReal],
             (tx, res) => {
-              Alert.alert('Sucesso', 'Ação concluída!');
-              carregarDados();
+              showAlert(
+                'Sucesso',
+                'Ação concluída!',
+                [{ text: 'OK', onPress: () => carregarDados() }]
+              );
             },
-            error => { console.log('Erro ao atualizar água disponível', error); }
+            error => { 
+              console.log('Erro ao atualizar água disponível', error);
+              showAlert(
+                'Erro',
+                'Erro ao atualizar água disponível',
+                [{ text: 'OK', style: 'cancel' }]
+              );
+            }
           );
         },
-        error => { console.log('Erro ao concluir ação', error); }
+        error => { 
+          console.log('Erro ao concluir ação', error);
+          showAlert(
+            'Erro',
+            'Erro ao concluir ação',
+            [{ text: 'OK', style: 'cancel' }]
+          );
+        }
       );
     });
   };
@@ -278,25 +325,34 @@ const Home = ({ navigation }) => {
   );
 
   return (
-    <FlatList
-      style={styles.container}
-      ListHeaderComponent={renderHeader}
-      data={acoesPendentes}
-      renderItem={renderAcaoItem}
-      keyExtractor={(item) => item.rowid.toString()}
-      ListFooterComponent={() => (
-        <>
-          {renderFooter()}
-          <FlatList
-            data={acoesConcluidas}
-            renderItem={renderAcaoItem}
-            keyExtractor={(item) => item.rowid.toString()}
-            ListEmptyComponent={<Text style={styles.emptyListText}>Nenhuma ação concluída</Text>}
-          />
-        </>
-      )}
-      ListEmptyComponent={<Text style={styles.emptyListText}>Nenhuma ação pendente</Text>}
-    />
+    <>
+      <FlatList
+        style={styles.container}
+        ListHeaderComponent={renderHeader}
+        data={acoesPendentes}
+        renderItem={renderAcaoItem}
+        keyExtractor={(item) => item.rowid.toString()}
+        ListFooterComponent={() => (
+          <>
+            {renderFooter()}
+            <FlatList
+              data={acoesConcluidas}
+              renderItem={renderAcaoItem}
+              keyExtractor={(item) => item.rowid.toString()}
+              ListEmptyComponent={<Text style={styles.emptyListText}>Nenhuma ação concluída</Text>}
+            />
+          </>
+        )}
+        ListEmptyComponent={<Text style={styles.emptyListText}>Nenhuma ação pendente</Text>}
+      />
+      <CustomAlert
+        visible={alertConfig.visible}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        buttons={alertConfig.buttons}
+        onDismiss={() => setAlertConfig(prev => ({ ...prev, visible: false }))}
+      />
+    </>
   );
 };
 

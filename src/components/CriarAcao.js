@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { TextInput, List, Text } from 'react-native-paper';
 import db from '../database/db';
 import theme from '../styles/theme';
 import CustomIcon from './common/CustomIcon'; // Corrigido o caminho do import
+import CustomAlert from './common/CustomAlert';
 
 const CriarAcao = ({ navigation }) => {
   const [qtdReal, setQtdReal] = useState('');
   const [atividades, setAtividades] = useState([]);
   const [atividadeSelecionada, setAtividadeSelecionada] = useState(null);
   const [expanded, setExpanded] = useState(false);
+  const [alertConfig, setAlertConfig] = useState({
+    visible: false,
+    title: '',
+    message: '',
+    buttons: []
+  });
 
   useEffect(() => {
     carregarAtividades();
@@ -32,9 +39,28 @@ const CriarAcao = ({ navigation }) => {
     });
   };
 
+  const showAlert = (title, message, buttons) => {
+    setAlertConfig({
+      visible: true,
+      title,
+      message,
+      buttons: buttons.map(btn => ({
+        ...btn,
+        onPress: () => {
+          setAlertConfig(prev => ({ ...prev, visible: false }));
+          btn.onPress && btn.onPress();
+        }
+      }))
+    });
+  };
+
   const salvarAcao = () => {
     if (!atividadeSelecionada || !qtdReal) {
-      Alert.alert('Erro', 'Por favor, selecione uma atividade e insira a quantidade real.');
+      showAlert(
+        'Erro',
+        'Por favor, selecione uma atividade e insira a quantidade real.',
+        [{ text: 'OK', style: 'cancel' }]
+      );
       return;
     }
 
@@ -43,13 +69,19 @@ const CriarAcao = ({ navigation }) => {
         `INSERT INTO Acoes (Qtdreal, idatividade) VALUES (?, ?)`,
         [parseInt(qtdReal), atividadeSelecionada.id],
         (tx, res) => {
-          Alert.alert('Sucesso', 'Ação criada com sucesso!', [
-            { text: 'OK', onPress: () => navigation.goBack() }
-          ]);
+          showAlert(
+            'Sucesso',
+            'Ação criada com sucesso!',
+            [{ text: 'OK', onPress: () => navigation.goBack() }]
+          );
         },
         error => { 
           console.log('Erro ao salvar ação', error);
-          Alert.alert('Erro', 'Ocorreu um erro ao salvar a ação.');
+          showAlert(
+            'Erro',
+            'Ocorreu um erro ao salvar a ação.',
+            [{ text: 'OK', style: 'cancel' }]
+          );
         }
       );
     });
@@ -99,6 +131,14 @@ const CriarAcao = ({ navigation }) => {
       <TouchableOpacity style={styles.button} onPress={salvarAcao}>
         <Text style={styles.buttonText}>Salvar Ação</Text>
       </TouchableOpacity>
+
+      <CustomAlert
+        visible={alertConfig.visible}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        buttons={alertConfig.buttons}
+        onDismiss={() => setAlertConfig(prev => ({ ...prev, visible: false }))}
+      />
     </View>
   );
 };

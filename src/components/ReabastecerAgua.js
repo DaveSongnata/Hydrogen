@@ -1,15 +1,41 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { TextInput, Text } from 'react-native-paper';
 import db from '../database/db';
 import theme from '../styles/theme';
+import CustomAlert from './common/CustomAlert';
 
 const ReabastecerAgua = ({ navigation }) => {
   const [quantidade, setQuantidade] = useState('');
+  const [alertConfig, setAlertConfig] = useState({
+    visible: false,
+    title: '',
+    message: '',
+    buttons: []
+  });
+
+  const showAlert = (title, message, buttons) => {
+    setAlertConfig({
+      visible: true,
+      title,
+      message,
+      buttons: buttons.map(btn => ({
+        ...btn,
+        onPress: () => {
+          setAlertConfig(prev => ({ ...prev, visible: false }));
+          btn.onPress && btn.onPress();
+        }
+      }))
+    });
+  };
 
   const reabastecer = () => {
     if (!quantidade || isNaN(parseInt(quantidade))) {
-      Alert.alert('Erro', 'Por favor, insira uma quantidade válida');
+      showAlert(
+        'Erro',
+        'Por favor, insira uma quantidade válida',
+        [{ text: 'OK', style: 'cancel' }]
+      );
       return;
     }
 
@@ -18,13 +44,19 @@ const ReabastecerAgua = ({ navigation }) => {
         `UPDATE Agua_disponivel SET qtdaguadisponivel = qtdaguadisponivel + ?`,
         [parseInt(quantidade)],
         (tx, res) => {
-          Alert.alert('Sucesso', 'Água reabastecida com sucesso!', [
-            { text: 'OK', onPress: () => navigation.goBack() }
-          ]);
+          showAlert(
+            'Sucesso',
+            'Água reabastecida com sucesso!',
+            [{ text: 'OK', onPress: () => navigation.goBack() }]
+          );
         },
         error => { 
           console.log('Erro ao reabastecer água', error);
-          Alert.alert('Erro', 'Ocorreu um erro ao reabastecer água');
+          showAlert(
+            'Erro',
+            'Ocorreu um erro ao reabastecer água',
+            [{ text: 'OK', style: 'cancel' }]
+          );
         }
       );
     });
@@ -32,7 +64,6 @@ const ReabastecerAgua = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-
       <TextInput
         style={styles.input}
         label="Quantidade de água (L)"
@@ -44,6 +75,14 @@ const ReabastecerAgua = ({ navigation }) => {
       <TouchableOpacity style={styles.button} onPress={reabastecer}>
         <Text style={styles.buttonText}>Reabastecer</Text>
       </TouchableOpacity>
+
+      <CustomAlert
+        visible={alertConfig.visible}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        buttons={alertConfig.buttons}
+        onDismiss={() => setAlertConfig(prev => ({ ...prev, visible: false }))}
+      />
     </View>
   );
 };
@@ -71,7 +110,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    color: theme.colors.background,
+    color: theme.colors.surface, // Corrigido para usar a cor correta
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
