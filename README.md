@@ -22,7 +22,7 @@ npm install moment
 
 npm install react-native-chart-kit
 
-###Dependências de UI e navegação
+## Dependências de UI e navegação
 
 npm install react-native-screens
 
@@ -36,7 +36,7 @@ npm install @react-native-masked-view/masked-view
 
 npm install react-native-vector-icons
 
-###Dependências para gráficos
+## Dependências para gráficos
 
 npm install react-native-svg
 
