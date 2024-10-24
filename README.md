@@ -114,4 +114,16 @@ Adicione ao `android/app/build.gradle`: gradle
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
 
+
+## Screenshots
+
+<div align="center">
+  <div style="display: flex; flex-direction: row; gap: 10px; flex-wrap: wrap; justify-content: center;">
+    <img src="screenshots/S109_Hydrogen.png" width="200"/>
+    <img src="screenshots/S256-Hydrogen.png" width="200"/>
+    <img src="screenshots/S319-Hydrogen.png" width="200"/>
+    <img src="screenshots/S353-Hydrogen.png" width="200"/>
+  </div>
+</div>
+
 Dave, 2024.
