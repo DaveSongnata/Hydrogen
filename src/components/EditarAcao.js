@@ -3,6 +3,7 @@ import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { TextInput, List, Text } from 'react-native-paper';
 import db from '../database/db';
 import theme from '../styles/theme';
+import CustomIcon from './common/CustomIcon'; // Corrigido o caminho do import
 
 const EditarAcao = ({ route, navigation }) => {
   const { acao } = route.params;

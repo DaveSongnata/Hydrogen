@@ -3,6 +3,7 @@ import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { TextInput, List, Text } from 'react-native-paper';
 import db from '../database/db';
 import theme from '../styles/theme';
+import CustomIcon from './common/CustomIcon'; // Corrigido o caminho do import
 
 const CriarAcao = ({ navigation }) => {
   const [qtdReal, setQtdReal] = useState('');
@@ -60,6 +61,17 @@ const CriarAcao = ({ navigation }) => {
         title={atividadeSelecionada ? atividadeSelecionada.nome : "Selecione uma atividade"}
         expanded={expanded}
         onPress={() => setExpanded(!expanded)}
+        right={props => (
+          <CustomIcon 
+            name={expanded ? "chevron-up" : "chevron-down"} 
+            size={24} 
+            color={theme.colors.text}
+            style={{ 
+              marginRight: 8,
+              resizeMode: 'contain'
+            }}
+          />
+        )}
       >
         {atividades.map(atividade => (
           <List.Item

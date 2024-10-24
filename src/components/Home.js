@@ -12,6 +12,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import db from '../database/db';
 import theme from '../styles/theme';
 import moment from 'moment';
+import CustomIcon from './common/CustomIcon';
 
 const Home = ({ navigation }) => {
   const [nome, setNome] = useState('');
@@ -189,7 +190,7 @@ const Home = ({ navigation }) => {
       <View style={styles.header}>
         <Text style={styles.greeting}>Olá, {nome}!</Text>
         <View style={styles.waterInfoContainer}>
-          <MaterialCommunityIcons name="water" size={30} color={theme.colors.surface} />
+          <CustomIcon name="water-drop" size={24} color={theme.colors.surface} />
           <Text style={styles.waterInfo}>{aguaDisponivel} L</Text>
         </View>
       </View>
@@ -263,6 +264,8 @@ const styles = StyleSheet.create({
   waterInfoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    height: 45, // Altura específica para acomodar o ícone
+    paddingVertical: 4, // Padding vertical para evitar cortes
   },
   waterInfo: {
     fontSize: 18,

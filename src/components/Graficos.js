@@ -5,6 +5,7 @@ import { LineChart } from 'react-native-chart-kit';
 import moment from 'moment';
 import db from '../database/db';
 import theme from '../styles/theme';
+import CustomIcon from './common/CustomIcon';
 
 const Graficos = ({ navigation }) => {
   const [dadosAcoesPorPeriodo, setDadosAcoesPorPeriodo] = useState([]);
@@ -181,6 +182,14 @@ const Graficos = ({ navigation }) => {
           title={atividadeSelecionada ? atividadeSelecionada.nome : "Selecione uma atividade"}
           expanded={expandedAtividades}
           onPress={() => setExpandedAtividades(!expandedAtividades)}
+          right={props => (
+            <CustomIcon 
+              name={expandedAtividades ? "chevron-up" : "chevron-down"} 
+              size={24} 
+              color={theme.colors.text}
+              style={{ marginRight: 8 }}
+            />
+          )}
         >
           {atividades.map(atividade => (
             <List.Item

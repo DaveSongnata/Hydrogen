@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import CustomIcon from './src/components/common/CustomIcon';
 import PrimeiraExecucao from './src/components/PrimeiraExecucao';
 import Home from './src/components/Home';
 import CriarAtividade from './src/components/CriarAtividade';
@@ -29,8 +29,21 @@ const App = () => {
           screenOptions={({ navigation }) => ({
             headerShown: true,
             headerLeft: () => (
-              <TouchableOpacity onPress={() => navigation.goBack()}>
-                <Icon name="arrow-left" size={24} color={theme.colors.surface} style={{ marginLeft: 10 }} />
+              <TouchableOpacity 
+                onPress={() => navigation.goBack()}
+                style={{ 
+                  padding: 8,  // Área de toque maior
+                  marginLeft: 8 
+                }}
+              >
+                <CustomIcon 
+                  name="back" 
+                  size={24} 
+                  color={theme.colors.surface}
+                  style={{ 
+                    resizeMode: 'contain'
+                  }}
+                />
               </TouchableOpacity>
             ),
             headerStyle: {
