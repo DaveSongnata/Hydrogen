@@ -10,23 +10,36 @@ Aplicativo React Native para controle de atividades e consumo de água.
 - Android Studio (para desenvolvimento Android)
 
 ## Dependências
-bash
-Dependências principais
 npm install @react-navigation/native
+
 npm install @react-navigation/stack
+
 npm install react-native-paper
+
 npm install react-native-sqlite-storage
+
 npm install moment
+
 npm install react-native-chart-kit
-Dependências de UI e navegação
+
+##Dependências de UI e navegação
+
 npm install react-native-screens
+
 npm install react-native-safe-area-context
+
 npm install react-native-gesture-handler
+
 npm install react-native-reanimated
+
 npm install @react-native-masked-view/masked-view
+
 npm install react-native-vector-icons
-Dependências para gráficos
+
+##Dependências para gráficos
+
 npm install react-native-svg
+
 
 
 ## Instalação
