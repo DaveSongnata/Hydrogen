@@ -196,17 +196,56 @@ const Home = ({ navigation }) => {
       </View>
       
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={reabastecerAgua}>
-          <Text style={styles.buttonText}>Reabastecer Água</Text>
+        <TouchableOpacity 
+          style={styles.button} 
+          onPress={() => navigation.navigate('ReabastecerAgua')}
+        >
+          <CustomIcon 
+            name="add" 
+            size={24} 
+            color={theme.colors.surface} 
+            style={{ marginBottom: 5 }}
+          />
+          <Text style={styles.buttonText}>Adicionar Água</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CriarAtividade')}>
-          <Text style={styles.buttonText}>Criar Atividade</Text>
+
+        <TouchableOpacity 
+          style={styles.button} 
+          onPress={() => navigation.navigate('CriarAtividade')}
+        >
+          <CustomIcon 
+            name="task-add" 
+            size={24} 
+            color={theme.colors.surface} 
+            style={{ marginBottom: 5 }}
+          />
+          <Text style={styles.buttonText}>Nova Atividade</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CriarAcao')}>
-          <Text style={styles.buttonText}>Criar Ação</Text>
+
+        <TouchableOpacity 
+          style={styles.button} 
+          onPress={() => navigation.navigate('CriarAcao')}
+        >
+          <CustomIcon 
+            name="action-add" 
+            size={24} 
+            color={theme.colors.surface} 
+            style={{ marginBottom: 5 }}
+          />
+          <Text style={styles.buttonText}>Nova Ação</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Graficos')}>
-          <Text style={styles.buttonText}>Ver Gráficos</Text>
+
+        <TouchableOpacity 
+          style={styles.button} 
+          onPress={() => navigation.navigate('Graficos')}
+        >
+          <CustomIcon 
+            name="chart" 
+            size={24} 
+            color={theme.colors.surface} 
+            style={{ marginBottom: 5 }}
+          />
+          <Text style={styles.buttonText}>Gráficos</Text>
         </TouchableOpacity>
       </View>
       
@@ -283,10 +322,12 @@ const styles = StyleSheet.create({
     borderRadius: theme.roundness,
     flex: 1,
     marginHorizontal: 5,
+    alignItems: 'center', // Centraliza o ícone e o texto
+    justifyContent: 'center',
   },
   buttonText: {
     color: theme.colors.surface,
-    fontSize: 14,
+    fontSize: 12, // Reduzido para melhor layout com ícone
     fontWeight: 'bold',
     textAlign: 'center',
   },

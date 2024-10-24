@@ -18,6 +18,10 @@ const iconMap = {
   'arrow-up': require('../../assets/icons/arrow-up.png'),
   'chevron-down': require('../../assets/icons/chevron-down.png'),
   'chevron-up': require('../../assets/icons/chevron-up.png'),
+  
+
+  'task-add': require('../../assets/icons/task-add.png'),
+  'action-add': require('../../assets/icons/action-add.png'),
 };
 
 const CustomIcon = ({ name, size = 24, color, style }) => {
