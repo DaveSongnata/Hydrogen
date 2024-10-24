@@ -55,8 +55,16 @@ const App = () => {
             },
           })}
         >
-          <Stack.Screen name="PrimeiraExecucao" component={PrimeiraExecucao} options={{ headerShown: false }} />
-          <Stack.Screen name="Home" component={Home} options={{ headerLeft: null }} />
+          <Stack.Screen 
+            name="PrimeiraExecucao" 
+            component={PrimeiraExecucao} 
+            options={{ headerShown: false }} 
+          />
+          <Stack.Screen 
+            name="Home" 
+            component={Home} 
+            options={{ headerShown: false }} // Removendo a navbar da Home
+          />
           <Stack.Screen name="CriarAtividade" component={CriarAtividade} options={{ title: 'Nova Atividade' }} />
           <Stack.Screen name="CriarAcao" component={CriarAcao} options={{ title: 'Nova Ação' }} />
           <Stack.Screen name="EditarAcao" component={EditarAcao} options={{ title: 'Editar Ação' }} />

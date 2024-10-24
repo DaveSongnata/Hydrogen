@@ -32,7 +32,7 @@ const ReabastecerAgua = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Reabastecer Água</Text>
+
       <TextInput
         style={styles.input}
         label="Quantidade de água (L)"
