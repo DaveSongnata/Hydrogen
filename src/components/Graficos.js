@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Dimensions, TouchableOpacity, ScrollView } from 'react-native';
+import { View, StyleSheet, Dimensions, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Text, List } from 'react-native-paper';
+import { LineChart } from 'react-native-gifted-charts';
 import moment from 'moment';
 import db from '../database/db';
 import theme from '../styles/theme';
@@ -85,7 +86,7 @@ const Graficos = ({ navigation }) => {
     });
   };
 
-  const renderBarChart = (dados, titulo) => {
+  const renderLineChart = (dados, titulo) => {
     if (!dados || dados.length === 0) {
       return (
         <View style={styles.emptyContainer}>
@@ -95,31 +96,69 @@ const Graficos = ({ navigation }) => {
     }
 
     try {
-      const maxValue = Math.max(...dados.map(item => 
-        parseFloat(item.value || item.eficiencia) || 0
-      ));
+      const chartData = dados.map(item => ({
+        value: parseFloat(item.value || item.eficiencia) || 0,
+        label: item.date || item.data,
+        dataPointText: `${(parseFloat(item.value || item.eficiencia) || 0).toFixed(1)}${titulo.includes('Eficiência') ? '%' : ''}`,
+      }));
 
       return (
         <View style={styles.chartContainer}>
           <Text style={styles.chartTitle}>{titulo}</Text>
-          <View style={styles.chartContent}>
-            {dados.map((item, index) => {
-              const value = parseFloat(item.value || item.eficiencia) || 0;
-              const height = (value / maxValue) * 150;
-              
-              return (
-                <View key={index} style={styles.barContainer}>
-                  <View style={[styles.bar, { height }]}>
-                    <Text style={styles.barValue}>
-                      {value.toFixed(1)}
-                      {titulo.includes('Eficiência') ? '%' : ''}
+          <LineChart
+            data={chartData}
+            height={250}
+            width={350}
+            spacing={40}
+            initialSpacing={20}
+            color={theme.colors.primary}
+            thickness={2}
+            startFillColor={`${theme.colors.primary}20`}
+            endFillColor={`${theme.colors.primary}00`}
+            startOpacity={0.9}
+            endOpacity={0.2}
+            backgroundColor="#fff"
+            rulesColor="#e3e3e3"
+            rulesType="solid"
+            yAxisColor="#e3e3e3"
+            xAxisColor="#e3e3e3"
+            xAxisLabelTextStyle={{ color: theme.colors.text, fontSize: 12 }}
+            yAxisTextStyle={{ color: theme.colors.text, fontSize: 12 }}
+            hideDataPoints={false}
+            dataPointsColor={theme.colors.primary}
+            dataPointsRadius={5}
+            curved
+            showVerticalLines
+            verticalLinesColor="rgba(14,164,164,0.5)"
+            xAxisLabelRotation={-45}
+            hideYAxisText={false}
+            yAxisLabelPrefix={titulo.includes('Eficiência') ? '' : ''}
+            yAxisLabelSuffix={titulo.includes('Eficiência') ? '%' : ''}
+            pointerConfig={{
+              pointerStripHeight: 160,
+              pointerStripColor: theme.colors.primary,
+              pointerStripWidth: 2,
+              pointerColor: theme.colors.primary,
+              radius: 6,
+              pointerLabelWidth: 100,
+              pointerLabelHeight: 90,
+              activatePointersOnLongPress: true,
+              autoAdjustPointerLabelPosition: true,
+              pointerLabelComponent: (items) => {
+                const item = items[0];
+                return (
+                  <View style={styles.tooltipContainer}>
+                    <Text style={styles.tooltipText}>
+                      {item.label}
+                    </Text>
+                    <Text style={styles.tooltipValue}>
+                      {item.dataPointText}
                     </Text>
                   </View>
-                  <Text style={styles.barLabel}>{item.date || item.data}</Text>
-                </View>
-              );
-            })}
-          </View>
+                );
+              },
+            }}
+          />
         </View>
       );
     } catch (error) {
@@ -142,13 +181,13 @@ const Graficos = ({ navigation }) => {
       );
     }
 
-    return renderBarChart(dadosEficiencia, `Eficiência das Ações (${atividadeSelecionada.nome})`);
+    return renderLineChart(dadosEficiencia, `Eficiência das Ações (${atividadeSelecionada.nome})`);
   };
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
-        {renderBarChart(dadosAcoesPorPeriodo, 'Ações Concluídas por Período')}
+        {renderLineChart(dadosAcoesPorPeriodo, 'Ações Concluídas por Período')}
         
         <Text style={styles.title}>Eficiência por Atividade</Text>
         <List.Accordion
@@ -188,12 +227,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginVertical: 10,
     elevation: 2,
+    alignItems: 'center',
   },
   chartTitle: {
     fontSize: 16,
     fontWeight: 'bold',
     color: theme.colors.primary,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   title: {
     fontSize: 18,
@@ -233,33 +273,21 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
     transform: [{ rotate: '-45deg' }],
   },
-  chartContent: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'space-around',
-    height: 200,
-    paddingTop: 20,
-  },
-  barContainer: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  bar: {
-    width: 30,
-    backgroundColor: theme.colors.primary,
+  tooltipContainer: {
+    backgroundColor: 'white',
+    padding: 10,
     borderRadius: 5,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    paddingTop: 5,
+    elevation: 3,
   },
-  barValue: {
-    color: '#fff',
-    fontSize: 10,
+  tooltipText: {
+    color: theme.colors.text,
+    fontSize: 12,
+    marginBottom: 5,
   },
-  barLabel: {
-    fontSize: 10,
-    marginTop: 5,
-    transform: [{ rotate: '-45deg' }],
+  tooltipValue: {
+    color: theme.colors.primary,
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });
 
